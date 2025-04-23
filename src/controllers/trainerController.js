@@ -12,7 +12,7 @@ class TrainerController {
             res.status(200).json({ trainers : trainers });
         } catch (error) {
             console.log(error);
-            return res.status(500).json({ statusCode: 500, message:  "Internal Server Error" });
+            return res.status(500).json({ status: 500, message:  "Internal Server Error" });
         }
     }
 
@@ -23,17 +23,17 @@ class TrainerController {
 
             //Vérifications
             if (!validator.isUUID(id)) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             const trainer = await trainerService.getTrainerById(id);
             if (!trainer) {
-                return res.status(404).json({ statusCode: 404, message: "Not Found" });
+                return res.status(404).json({ status: 404, message: "Not Found" });
             }
 
-            return res.status(200).json(trainer);
+            return res.status(200).json({...trainer, status : 200});
         } catch (error) {
             console.log(error);
-            return res.status(500).json({ statusCode: 500, message:  "Internal Server Error" });
+            return res.status(500).json({ status: 500, message:  "Internal Server Error" });
         }
     }
 
@@ -42,10 +42,10 @@ class TrainerController {
         try {
             const { id } = req.trainer;
             const trainer = await trainerService.getTrainerById(id);
-            return res.status(200).json(trainer);
+            return res.status(200).json({ trainer : trainer, status : 200});
         } catch (error) {
             console.log(error);
-            return res.status(500).json({ statusCode: 500, message:  "Internal Server Error" });
+            return res.status(500).json({ status: 500, message:  "Internal Server Error" });
         }
     }
  
@@ -59,33 +59,33 @@ class TrainerController {
 
             //Vérifications
             if (!validator.isUUID(id)) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
 
             if (!firstName && !lastName && !email && !password) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             if (firstName && !validator.isLength(firstName, { min: 3, max: 20 })) {
                 console.log("Invalid First Name");
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             if (lastName && !validator.isLength(lastName, { min: 3, max: 20 })) {
                 console.log("Invalid Last Name");
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             if (email && !validator.isEmail(email)) {
                 console.log("Invalid Email");
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             if (password && !validator.isLength(password, { min: 8, max: 30 })) {
                 console.log("Invalid Password");
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
 
        
             const existingTrainer = await trainerService.getTrainerById(id);
             if (!existingTrainer) {
-                return res.status(404).json({ statusCode: 404, message: "Not Found" });
+                return res.status(404).json({ status: 404, message: "Not Found" });
             }
 
             let finalPassword;
@@ -98,7 +98,7 @@ class TrainerController {
             if (email) {
                 const existingTrainerWithEmail = await trainerService.getTrainerByEmail(email);
                 if (existingTrainerWithEmail && existingTrainerWithEmail.id !== id) {
-                    return res.status(409).json({ statusCode: 409, message: "Conflict" });
+                    return res.status(409).json({ status: 409, message: "Conflict" });
                 }
             }
 
@@ -110,11 +110,11 @@ class TrainerController {
 
             const trainer = await trainerService.updateTrainer(id, trainerData);
 
-            return res.status(200).json({ trainer: trainer });
+            return res.status(200).json({ trainer: trainer, status : 200 });
 
         } catch (error) {
             console.log(error);
-            return res.status(500).json({ statusCode: 500, message:  "Internal Server Error" });
+            return res.status(500).json({ status: 500, message:  "Internal Server Error" });
         }
     }   
 
@@ -127,19 +127,19 @@ class TrainerController {
 
             //Vérifications
             if (!validator.isUUID(id)) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
 
         
             const existingTrainer = await trainerService.getTrainerById(id);
             if (!existingTrainer) {
-                return res.status(404).json({ statusCode: 404, message: "Not Found" });
+                return res.status(404).json({ status: 404, message: "Not Found" });
             }
             await trainerService.deleteTrainer(id);
-            return res.status(204).json({ statusCode: 204, message: "No Content" });
+            return res.status(204).json({ status: 204, message: "No Content" });
         } catch (error) {
             console.log(error);
-            return res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
+            return res.status(500).json({ status: 500, message: "Internal Server Error" });
         }
     }
 
@@ -154,34 +154,34 @@ class TrainerController {
 
             //Vérifications
             if (!validator.isUUID(id)) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             if (!validator.isInt(pokemonIdString)) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
 
        
             const existingTrainer = await trainerService.getTrainerById(id);
             if (!existingTrainer) {
-                return res.status(404).json({ statusCode: 404, message: "Not Found" });
+                return res.status(404).json({ status: 404, message: "Not Found" });
             }
             
             const team = existingTrainer.team;
             if (team.length >= 6) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             if (team.includes(pokemonIdString)) {
-                return res.status(409).json({ statusCode: 409, message: "Conflict" });
+                return res.status(409).json({ status: 409, message: "Conflict" });
             }
 
             team.push(pokemonIdString);   
             await trainerService.updateTrainer(id, { team });
  
-            return res.status(200).json({ team : team });
+            return res.status(200).json({ team : team, status : 200 });
 
         } catch (error) {
             console.log(error);
-            return res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
+            return res.status(500).json({ status: 500, message: "Internal Server Error" });
         }
 
     }   
@@ -197,30 +197,30 @@ class TrainerController {
 
             //Vérifications
             if (!validator.isUUID(id)) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             if (!validator.isInt(pokemonIdString)) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
 
             const existingTrainer = await trainerService.getTrainerById(id);    
             if (!existingTrainer) {
-                return res.status(404).json({ statusCode: 404, message: "Not Found" });
+                return res.status(404).json({ status: 404, message: "Not Found" });
             }
 
             const team = existingTrainer.team;
             const index = team.indexOf(pokemonIdString);
             if (index === -1) {
-                return res.status(400).json({ statusCode: 400, message: "Bad Request" });
+                return res.status(400).json({ status: 400, message: "Bad Request" });
             }
             team.splice(index, 1);
             await trainerService.updateTrainer(id, { team });
  
-            return res.status(200).json({ team : team });
+            return res.status(200).json({ team : team, status : 200 });
 
         } catch (error) {
             console.log(error);
-            return res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
+            return res.status(500).json({ status: 500, message: "Internal Server Error" });
         }
         
     }   

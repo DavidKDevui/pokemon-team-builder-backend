@@ -43,14 +43,11 @@ const limiter = rateLimit({
 // Configuration CORS
 // On autorise toutes les origines (dev)
 app.use(cors({
-    origin: '*',
+    origin: process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   }));
-
-// Middleware pour parser le JSON
-
-
+ 
 // Environment Variables
 const PORT = process.env.PORT || 3000;
 
@@ -79,16 +76,7 @@ const connectToDatabase = async () => {
 }
 
 connectToDatabase();
-
-
-
-
-
-sequelize.authenticate()
-    .then(() => { console.log('Connexion à la base de données établie avec succès.'); return sequelize.sync(); })
-    .then(() => { console.log('Modèles synchronisés avec la base de données.'); })
-    .catch(err => { console.error('Erreur de connexion à la base de données:', err); });
-
+ 
 
 // Routes
 app.use('/api/v1/trainers', limiter, trainerRoutes);
@@ -100,10 +88,10 @@ app.use('/api/v1/docs', limiter, swaggerUi.serve, swaggerUi.setup(swaggerSpecs))
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ statusCode: 500, message: "Internal Server Error" });
+    return res.status(500).json({ status: 500, message: "Internal Server Error" });
 });
 app.use((req, res, next) => {
-    res.status(404).json({ statusCode: 404, message: "Not Found" });
+    return res.status(404).json({ status: 404, message: "Not Found" });
 });
 
 

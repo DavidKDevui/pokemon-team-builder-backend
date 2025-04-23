@@ -32,7 +32,7 @@ const authMiddleware = require('../middleware/authMiddleware');
  *             schema:
  *               type: object
  *               properties:
- *                 statusCode:
+ *                 status:
  *                   type: integer
  *                   example: 401
  *                 message:
@@ -64,7 +64,7 @@ router.get('/', authMiddleware, trainerController.getAllTrainers);
  *             schema:
  *               type: object
  *               properties:
- *                 statusCode:
+ *                 status:
  *                   type: integer
  *                   example: 401
  *                 message:
@@ -146,7 +146,7 @@ router.patch('/', authMiddleware, trainerController.updateTrainer);
  *             schema:
  *               type: object
  *               properties:
- *                 statusCode:
+ *                 status:
  *                   type: integer
  *                   example: 401
  *                 message:

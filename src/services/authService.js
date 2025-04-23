@@ -46,13 +46,14 @@ class AuthService {
             return { trainer, ...tokens};
         
     }
+    
 
 
     generateTokens(trainer) {
         const accessToken = jwt.sign(
             { id: trainer.id },
             process.env.JWT_ACCESS_SECRET,
-            { expiresIn: '15m' }
+            { expiresIn: '1m' }
         );
 
         const refreshToken = jwt.sign(
